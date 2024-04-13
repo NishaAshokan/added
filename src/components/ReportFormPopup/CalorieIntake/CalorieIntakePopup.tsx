@@ -3,6 +3,9 @@ import '../popup.css'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 //import DatePicker from "react-horizontal-datepicker";
+// import DatePicker from 'react-datepicker';
+// import 'react-datepicker/dist/react-datepicker.css';
+
 import { AiFillDelete, AiOutlineClose } from 'react-icons/ai'
 import { TimeClock } from '@mui/x-date-pickers/TimeClock';
 import dayjs, { Dayjs } from 'dayjs';
@@ -36,12 +39,7 @@ const CalorieIntakePopup: React.FC<CaloriIntakePopupProps> = ({ setShowCalorieIn
           <AiOutlineClose />
         </button>
 
-        <DatePicker getSelectedDay={selectedDay}
-          endDate={100}
-          selectDate={new Date()}
-          labelFormat={"MMMM"}
-          color={color}
-        />
+       
 
         <TextField id="outlined-basic" label="Food item name" variant="outlined" color="warning" />
         <TextField id="outlined-basic" label="Food item amount (in gms)" variant="outlined" color="warning" />

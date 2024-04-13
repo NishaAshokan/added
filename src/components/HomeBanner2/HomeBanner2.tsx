@@ -71,7 +71,7 @@ const HomeBanner2 = () => {
 
   return (
     <div>
-      <div></div>
+    
       <h1 className='mainhead1'>Workouts</h1>
       <Swiper
         slidesPerView={1}

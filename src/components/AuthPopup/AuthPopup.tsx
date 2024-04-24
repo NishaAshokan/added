@@ -329,9 +329,11 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setShowpopup }) => {
                                     }}
                                 >Login</button>
                             </form>
-                            <p>Don't have an account?  <button onClick={() => {
+                            <p>Don't have an account?  
+                            <button onClick={() => {
                                 setShowSignup(true)
-                            }}>Signup</button></p>
+                            }}>Signup</button>
+                            </p>
                         </div>
 
                     </div>

@@ -64,7 +64,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setShowpopup }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(loginformData),
-            credentials: 'include'
+            
         })
         .then(res => res.json())
             .then(data => {
@@ -91,7 +91,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setShowpopup }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(signupformData),
-            credentials: 'include'
+            
         })
             .then(res => res.json())
             .then(data => {

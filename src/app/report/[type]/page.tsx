@@ -4,9 +4,12 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import './ReportPage.css'
 import { AiFillEdit } from 'react-icons/ai'
 import CaloriIntakePopup from '@/components/ReportFormPopup/CalorieIntake/CalorieIntakePopup';
+import {usePathname} from 'next/navigation'
 
 const page = () => {
     const color = '#ffc20e'
+    const pathname = usePathname();
+    console.log(pathname);
 
     const chartsParams = {
         // margin: { bottom: 20, left: 25, right: 5 },
@@ -16,61 +19,36 @@ const page = () => {
 
     const [dataS1, setDataS1] = React.useState<any>(null)
     const getDataForS1 = async () => {
+        if(pathname == '/report/calorie%20Intake'){
+            fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/getcalorieintakebylimit', {
+                method : 'POST',
+                credentials : 'include',
+                headers : {
+                    'Content-tpe' : 'application/json',
+                },
 
-        let temp = [
-            {
-                date: 'Thu Sep 28 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2000,
-                unit: 'kcal'
-            },
-            {
-                date: 'Wed Sep 27 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2500,
-                unit: 'kcal'
-            },
-            {
-                date: 'Tue Sep 26 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2700,
-                unit: 'kcal'
-            },
-            {
-                date: 'Mon Sep 25 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 3000,
-                unit: 'kcal'
-            },
-            {
-                date: 'Sun Sep 24 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2000,
-                unit: 'kcal'
-            },
-            {
-                date: 'Sat Sep 23 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2300,
-                unit: 'kcal'
-            },
-            {
-                date: 'Fri Sep 22 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2500,
-                unit: 'kcal'
-            },
-            {
-                date: 'Thu Sep 21 2023 20:30:30 GMT+0530 (India Standard Time)',
-                value: 2700,
-                unit: 'kcal'
-            },
-        ]
-
-        let dataForLineChart = temp.map((item: any) => {
-            let val = JSON.stringify(item.value)
-            return val
-        })
-
-        let dataForXAxis = temp.map((item: any) => {
-            let val = new Date(item.date)
-            return val
-        })
-
-        console.log({
+                body : JSON.stringify({ limit : 10})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.ok ){
+                    let temp = data.data.map((item: any) => {
+                        return{
+                            data : item.date,
+                            value : item.calorirIntake,
+                            unit : 'kcal'
+                        }
+                    })
+                    let dataForLineChart = temp.map((item: any) => {
+                            let val = JSON.stringify(item.value)
+                            return val
+                        })
+                
+                        let dataForXAxis = temp.map((item: any) => {
+                            let val = new Date(item.date)
+                            return val
+                        })
+                        setDataS1({
             data: dataForLineChart,
             title: '1 Day Calorie Intake',
             color: color,
@@ -80,17 +58,98 @@ const page = () => {
                 scaleType: 'time'
             }
         })
+                }
+                else{
+                    setDataS1([])
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+        else{
+            alert("get report for other data")
+        }
 
-        setDataS1({
-            data: dataForLineChart,
-            title: '1 Day Calorie Intake',
-            color: color,
-            xAxis: {
-                data: dataForXAxis,
-                label: 'Last 10 Days',
-                scaleType: 'time'
-            }
-        })
+        //  && data.data.length > 0 let temp = [
+        //     {
+        //         date: 'Thu Sep 28 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2000,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Wed Sep 27 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2500,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Tue Sep 26 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2700,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Mon Sep 25 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 3000,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Sun Sep 24 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2000,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Sat Sep 23 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2300,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Fri Sep 22 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2500,
+        //         unit: 'kcal'
+        //     },
+        //     {
+        //         date: 'Thu Sep 21 2023 20:30:30 GMT+0530 (India Standard Time)',
+        //         value: 2700,
+        //         unit: 'kcal'
+        //     },
+        // ]
+
+        // let dataForLineChart = temp.map((item: any) => {
+        //     let val = JSON.stringify(item.value)
+        //     return val
+        // })
+
+        // let dataForXAxis = temp.map((item: any) => {
+        //     let val = new Date(item.date)
+        //     return val
+        // })
+
+        // console.log({
+        //     data: dataForLineChart,
+        //     title: '1 Day Calorie Intake',
+        //     color: color,
+        //     xAxis: {
+        //         data: dataForXAxis,
+        //         label: 'Last 10 Days',
+        //         scaleType: 'time'
+        //     }
+        // })
+
+        // {
+        //     dataS1.length > 0 && 
+        //     <>
+        // // setDataS1({
+        // }
+        // <></>
+        //     data: dataForLineChart,
+        //     title: '1 Day Calorie Intake',
+        //     color: color,
+        //     xAxis: {
+        //         data: dataForXAxis,
+        //         label: 'Last 10 Days',
+        //         scaleType: 'time'
+        //     } 
+        // })
     }
 
     React.useEffect(() => {
@@ -101,7 +160,8 @@ const page = () => {
 
     return (
         <div className='reportpage'>
-            <div className='s1'>
+
+                <div className='s1'>
                 {
                     dataS1 &&
                     <LineChart
@@ -149,6 +209,7 @@ const page = () => {
                     />
                 }
             </div>
+           
 
             <div className='s3'>
                 {
@@ -199,9 +260,16 @@ const page = () => {
                     />
                 }
             </div>
+           
+           
             <button className='editbutton'
-                onClick={() => {
-                    setShowCalorieIntakePopup(true)
+                onClick={() =>  {
+                    if(pathname == '/report/calorie%20Intake'){
+                        setShowCalorieIntakePopup(true)
+                    }
+                    else{
+                        alert(' show popup for other report')
+                    }
                 }}
             >
                 <AiFillEdit />

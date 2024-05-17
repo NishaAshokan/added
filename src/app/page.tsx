@@ -6,9 +6,13 @@ import HomeBanner2 from '@/components/HomeBanner2/HomeBanner2'
 
 export default function Home() {
   return (
+    <>
+    <Image src="/logo.png" alt="Logo" width={200} height={100} priority />
     <main className={styles.main}>
+
       <HomeBanner1 />
       <HomeBanner2 />
     </main>
+    </>
   )
 }

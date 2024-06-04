@@ -1,67 +1,152 @@
 "use client"
-import React, { Suspense, useState, useEffect } from 'react'
-import './workoutPage.css'
-import { useSearchParams } from 'next/navigation'
 
-const WorkoutPage = () => {
-  const [workout, setWorkout] = React.useState<any>(null)
-  const [data, setData] = React.useState<any>(null)
-  const [error, setError] = useState<any>(null);
-  const searchParams = useSearchParams()
-  const workoutid = searchParams.get('id')
+import React, { Suspense, useEffect, useState } from 'react';
+import './workoutPage.css';
+import { useSearchParams } from 'next/navigation';
 
-  const getWorkout = async () => {
-    try {
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_API + '/workoutplans/workouts/' + workoutid,
-          {
-            method: 'GET',
-            credentials: 'include',
-          }
-        );
-  
-        const data = await response.json();
-        setData(data.ok ? data.data : null);
-      } catch (error) {
-        console.error('Error fetching workout:', error);
-        setError(error); // Store the error for display
-      }
-    };
-  
-    useEffect(() => {
-      getWorkout();
-    }, []);
-
-  return (
-    <Suspense fallback={<div>Loading workout...</div>}> {/* Fallback content during data fetching */}
-      {data && ( // Only render content if data is available
-        <div className='workout'>
-          <h1 className='mainhead1'>{data?.name} Day</h1>
-          <div className='workout__exercises'>
-            {data?.exercises?.map((item: any, index: number) => (
-              <div
-                key={index} // Add a unique key for each exercise
-                className={index % 2 === 0 ? 'workout__exercise' : 'workout__exercise workout__exercise--reverse'}
-              >
-                <h3>{index + 1}</h3>
-                <div className='workout__exercise__image'>
-                  <img src={item.imageUrl} alt={item.exercise} />
-                </div>
-                <div className='workout__exercise__content'>
-                  <h2>{item.name}</h2>
-                  <span>{item.sets} sets X {item.reps} reps</span>
-                  <p>{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </Suspense>
-  )
+interface Exercise {
+  imageUrl: string;
+  exercise: string;
+  name: string;
+  sets: number;
+  reps: number;
+  description: string;
 }
 
-export default WorkoutPage
+interface WorkoutData {
+  name: string;
+  exercises: Exercise[];
+}
+
+const WorkoutComponent: React.FC = () => {
+  const [data, setData] = useState<WorkoutData | null>(null);
+  const searchParams = useSearchParams();
+  const workoutid = searchParams.get('id');
+
+  useEffect(() => {
+    const getWorkout = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/workoutplans/workouts/${workoutid}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const result = await res.json();
+        if (result.ok) {
+          setData(result.data);
+        } else {
+          setData(null);
+        }
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+        setData(null);
+      }
+    };
+
+    getWorkout();
+  }, [workoutid]);
+
+  if (!data) {
+    return <div>Loading workout...</div>;
+  }
+
+  return (
+    <div className='workout'>
+      <h1 className='mainhead1'>{data.name} Day</h1>
+      <div className='workout__exercises'>
+        {data.exercises.map((item, index) => (
+          <div key={index} className={index % 2 === 0 ? 'workout__exercise' : 'workout__exercise workout__exercise--reverse'}>
+            <h3>{index + 1}</h3>
+            <div className='workout__exercise__image'>
+              <img src={item.imageUrl} alt={item.exercise} />
+            </div>
+            <div className='workout__exercise__content'>
+              <h2>{item.name}</h2>
+              <span>{item.sets} sets X {item.reps} reps</span>
+              <p>{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Page: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading workout...</div>}>
+      <WorkoutComponent />
+    </Suspense>
+  );
+};
+
+export default Page;
+
+
+// "use client"
+// import React, { Suspense, useState, useEffect } from 'react'
+// import './workoutPage.css'
+// import { useSearchParams } from 'next/navigation'
+
+// const WorkoutPage = () => {
+//   const [workout, setWorkout] = React.useState<any>(null)
+//   const [data, setData] = React.useState<any>(null)
+//   const [error, setError] = useState<any>(null);
+//   const searchParams = useSearchParams()
+//   const workoutid = searchParams.get('id')
+
+//   const getWorkout = async () => {
+//     try {
+//         const response = await fetch(
+//           process.env.NEXT_PUBLIC_BACKEND_API + '/workoutplans/workouts/' + workoutid,
+//           {
+//             method: 'GET',
+//             credentials: 'include',
+//           }
+//         );
+  
+//         const data = await response.json();
+//         setData(data.ok ? data.data : null);
+//       } catch (error) {
+//         console.error('Error fetching workout:', error);
+//         setError(error); // Store the error for display
+//       }
+//     };
+  
+//     useEffect(() => {
+//       getWorkout();
+//     }, []);
+
+//   return (
+//     <Suspense fallback={<div>Loading workout...</div>}> {/* Fallback content during data fetching */}
+//       {data && ( // Only render content if data is available
+//         <div className='workout'>
+//           <h1 className='mainhead1'>{data?.name} Day</h1>
+//           <div className='workout__exercises'>
+//             {data?.exercises?.map((item: any, index: number) => (
+//               <div
+//                 key={index} // Add a unique key for each exercise
+//                 className={index % 2 === 0 ? 'workout__exercise' : 'workout__exercise workout__exercise--reverse'}
+//               >
+//                 <h3>{index + 1}</h3>
+//                 <div className='workout__exercise__image'>
+//                   <img src={item.imageUrl} alt={item.exercise} />
+//                 </div>
+//                 <div className='workout__exercise__content'>
+//                   <h2>{item.name}</h2>
+//                   <span>{item.sets} sets X {item.reps} reps</span>
+//                   <p>{item.description}</p>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </Suspense>
+//   )
+// }
+
+// export default WorkoutPage
 
 // "use client"
 

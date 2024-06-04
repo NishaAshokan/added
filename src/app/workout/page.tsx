@@ -1,28 +1,36 @@
 "use client"
-import React, { Suspense } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import './workoutPage.css'
 import { useSearchParams } from 'next/navigation'
 
 const WorkoutPage = () => {
   const [workout, setWorkout] = React.useState<any>(null)
   const [data, setData] = React.useState<any>(null)
-
+  const [error, setError] = useState<any>(null);
   const searchParams = useSearchParams()
   const workoutid = searchParams.get('id')
 
   const getWorkout = async () => {
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/workoutplans/workouts/' + workoutid, {
-      method: 'GET',
-      credentials: 'include'
-    })
-
-    const data = await response.json()
-    setData(data.ok ? data.data : null)
-  }
-
-  React.useEffect(() => {
-    getWorkout();
-  }, []);
+    try {
+        const response = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_API + '/workoutplans/workouts/' + workoutid,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+  
+        const data = await response.json();
+        setData(data.ok ? data.data : null);
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+        setError(error); // Store the error for display
+      }
+    };
+  
+    useEffect(() => {
+      getWorkout();
+    }, []);
 
   return (
     <Suspense fallback={<div>Loading workout...</div>}> {/* Fallback content during data fetching */}

@@ -31,7 +31,7 @@ const page = () => {
             })
             .then(res => res.json())
             .then(data => {
-                if(data.ok ){
+                if(data.ok){
                     let temp = data.data.map((item: any) => {
                         return{
                             data : item.date,
@@ -39,6 +39,7 @@ const page = () => {
                             unit : 'kcal'
                         }
                     })
+                    
                     let dataForLineChart = temp.map((item: any) => {
                             let val = JSON.stringify(item.value)
                             return val

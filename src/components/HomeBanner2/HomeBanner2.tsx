@@ -183,11 +183,11 @@ return (
                 backgroundImage: `url(${item.imageUrl})`
               }}
               onClick={() => {
-                window.location.href = `/workout/${item.type}`;
+                window.location.href = `/workout?id=${item._id}`
               }}
             >
                <div className='swiper-slide-content'>
-                 <h2>{item.type} </h2>
+                 <h2>{item.name} </h2>
                  <p>{item.durationInMin} min</p>
                </div>
               </ div>

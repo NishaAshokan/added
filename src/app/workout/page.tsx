@@ -1,5 +1,6 @@
 "use client"
-import React from 'react'
+// import React from 'react'
+import React, { Suspense } from 'react'
 import './workoutPage.css'
 import { useSearchParams } from 'next/navigation'
 const page = () => {
@@ -321,6 +322,7 @@ const page = () => {
         getWorkout();
     }, []);
     return (
+        <Suspense fallback={<div>Loading workout...</div>}> {/* Fallback content during data fetching */}
         <>
         {
          data &&    
@@ -349,8 +351,10 @@ const page = () => {
         </div>
             }
             </>
+            </Suspense>
     )
 }
+export default page
 //     return (
 //         <div className='workout'>
 //             <h1 className='mainhead1'> {workout?.type} Day</h1>
@@ -379,4 +383,3 @@ const page = () => {
 //     )
 // }
 
-export default page
